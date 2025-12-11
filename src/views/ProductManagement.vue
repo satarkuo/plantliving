@@ -127,7 +127,7 @@ TypeScript 練習題目 - 商品管理頁面
           <thead>
             <tr>
               <th scope="col">分類</th>
-              <th scope="col">商品名稱</th>
+              <th scope="col">商品名稱／ID</th>
               <th scope="col">原價</th>
               <th scope="col">售價</th>
               <th scope="col" class="text-center">啟用</th>
@@ -137,7 +137,7 @@ TypeScript 練習題目 - 商品管理頁面
           <tbody>
             <tr v-for="product in products" :key="product.id">
               <td>{{ product.category }}</td>
-              <td>{{ product.title }}</td>
+              <td>{{ product.title }}<br />{{ product.id }}</td>
               <td>{{ product.origin_price }}</td>
               <td>{{ product.price }}</td>
               <td class="text-center">

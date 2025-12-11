@@ -1,120 +1,111 @@
 <script setup lang="ts">
-import { apiDeleteOrder, apiGetOrders } from '@/api/order'
-import DeleteModal from '@/components/DeleteModal.vue'
-import OrderDetailModal from '@/components/OrderDetailModal.vue'
-import type { Order, Pagination } from '@/types/order'
-import { onMounted, ref, useTemplateRef } from 'vue'
+  import { apiDeleteCoupon, apiGetCoupons } from '@/api/coupon';
+  import DeleteModal from '@/components/DeleteModal.vue';
+  import CouponDetailModal from '@/components/CouponDetailModal.vue';
+  import type { Coupon, Pagination } from '@/types/coupon';
+  import { onMounted, ref, useTemplateRef } from 'vue';
 
-const orderDetailModalRef = useTemplateRef('orderDetailModalRef')
-const deleteModalRef = useTemplateRef('deleteModalRef')
+  const couponDetailModalRef = useTemplateRef('couponDetailModalRef');
+  const deleteModalRef = useTemplateRef('deleteModalRef');
 
-const tempOrder = ref<Order>({
-  create_at: 0,
-  id: '',
-  is_paid: false,
-  total: 0,
-  message: '',
-  products: {},
-  user: {
-    address: '',
-    email: '',
-    name: '',
-    tel: '',
-  },
-  num: 0,
-})
+  const tempCoupon = ref<Coupon>({
+    code: '',
+    due_date: 0,
+    id: '',
+    is_enabled: 0,
+    percent: 0,
+    title: '',
+    num: 0,
+  });
 
-const currentPage = ref('1')
+  const currentPage = ref('1');
 
-const orders = ref<Order[]>([])
+  const coupons = ref<Coupon[]>([]);
 
-const pagination = ref<Pagination>({
-  total_pages: 0,
-  current_page: 0,
-  has_pre: false,
-  has_next: false,
-  category: '',
-})
+  const pagination = ref<Pagination>({
+    total_pages: 0,
+    current_page: 0,
+    has_pre: false,
+    has_next: false,
+    category: '',
+  });
 
-const getOrders = async () => {
-  try {
-    const res = await apiGetOrders({
-      page: currentPage.value,
-    })
+  const getCoupons = async () => {
+    try {
+      const res = await apiGetCoupons({
+        page: currentPage.value,
+      });
 
-    orders.value = res.data.orders
-    pagination.value = res.data.pagination
-  } catch (error) {
-    alert('取得訂單列表失敗')
-  }
-}
-onMounted(() => {
-  getOrders()
-})
+      coupons.value = res.data.coupons;
+      pagination.value = res.data.pagination;
+    } catch (error) {
+      alert('取得優惠券列表失敗');
+    }
+  };
+  onMounted(() => {
+    getCoupons();
+  });
 
-const openModal = (order: Order) => {
-  tempOrder.value = order
-  orderDetailModalRef.value?.openModal()
-}
+  const openModal = (coupon: Coupon | null = null) => {
+    if (coupon) {
+      tempCoupon.value = coupon;
+    }
+    couponDetailModalRef.value?.openModal();
+  };
 
-const openDeleteModal = (orderId: string) => {
-  deleteModalRef.value?.openModal(() => deleteOrder(orderId))
-}
+  const openDeleteModal = (couponId: string) => {
+    deleteModalRef.value?.openModal(() => deleteCoupon(couponId));
+  };
 
-const deleteOrder = async (orderId: string) => {
-  try {
-    await apiDeleteOrder(orderId)
-  } catch (error) {
-    alert('刪除訂單失敗')
-  } finally {
-    getOrders()
-  }
-}
+  const deleteCoupon = async (couponId: string) => {
+    try {
+      await apiDeleteCoupon(couponId);
+    } catch (error) {
+      alert('刪除優惠券失敗');
+    } finally {
+      getCoupons();
+    }
+  };
 </script>
 
 <template>
+  <div class="d-flex justify-content-end align-items-center mb-4">
+    <!-- <button @click="openModal(null)" type="button" class="btn btn-dark rounded-lg px-4 py-2">
+      <i class="fas fa-plus me-2"></i>新增優惠券
+    </button> -->
+  </div>
   <div class="card shadow-sm rounded-lg flex-grow-1">
     <div class="card-body p-4">
       <div class="table-responsive">
         <table class="table table-hover align-middle">
           <thead>
             <tr>
-              <th scope="col">日期</th>
-              <th scope="col">訂單編號</th>
-              <th scope="col">品項</th>
-              <th scope="col">金額</th>
-              <th scope="col">訂單狀態</th>
+              <th scope="col">項目</th>
+              <th scope="col">標題</th>
+              <th scope="col">優惠碼</th>
+              <th scope="col">到期日期</th>
+              <th scope="col">優惠券編號</th>
+              <th scope="col">啟用狀態</th>
+              <th scope="col">折扣</th>
               <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="order in orders" :key="order.id">
-              <td>{{ new Date(order.create_at * 1000).toLocaleDateString('zh-TW') }}</td>
-              <td class="order-number">{{ order.id }}</td>
-              <td>{{ Object.keys(order.products).length }}</td>
-              <td>{{ order.total }}</td>
+            <tr v-for="coupon in coupons" :key="coupon.id">
+              <td>{{ coupon.num }}</td>
+              <td>{{ coupon.title }}</td>
+              <td>{{ coupon.code }}</td>
+              <td>{{ new Date(coupon.due_date * 1000).toLocaleDateString('zh-TW') }}</td>
+              <td class="coupon-number">{{ coupon.id }}</td>
               <td>
-                <span
-                  class="badge"
-                  :class="{ 'bg-success': order.is_paid, 'bg-danger': !order.is_paid }"
-                  >{{ order.is_paid ? '已付款' : '未付款' }}</span
-                >
+                <span class="badge" :class="{ 'bg-success': coupon.is_enabled, 'bg-gray': !coupon.is_enabled }">{{
+                  coupon.is_enabled ? '啟用' : '停用'
+                }}</span>
               </td>
+              <td>{{ coupon.percent / 100 }} 折</td>
               <td class="text-nowrap">
-                <button
-                  @click="openModal(order)"
-                  type="button"
-                  class="btn btn-sm btn-outline-dark rounded-lg me-2"
-                >
-                  查看
-                </button>
-                <button
-                  @click="openDeleteModal(order.id)"
-                  type="button"
-                  class="btn btn-sm btn-outline-danger rounded-lg"
-                >
-                  刪除
-                </button>
+                <button @click="openModal(coupon)" type="button" class="btn btn-sm btn-outline-dark rounded-lg me-2">查看</button>
+                <button @click="openDeleteModal(coupon.id)" type="button" class="btn btn-sm btn-outline-danger rounded-lg">刪除</button>
               </td>
             </tr>
           </tbody>
@@ -163,8 +154,8 @@ const deleteOrder = async (orderId: string) => {
     </div>
   </div>
 
-  <OrderDetailModal ref="orderDetailModalRef" :order="tempOrder" />
-  <DeleteModal ref="deleteModalRef" title="刪除訂單" content="確定要刪除該訂單嗎？" />
+  <CouponDetailModal ref="couponDetailModalRef" :coupon="tempCoupon" />
+  <DeleteModal ref="deleteModalRef" title="刪除優惠券" content="確定要刪除該優惠券嗎？" />
 </template>
 
 <style lang="scss" scoped></style>

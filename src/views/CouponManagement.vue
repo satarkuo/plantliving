@@ -89,9 +89,10 @@
               <th scope="col">項目</th>
               <th scope="col">標題 <small class="text-secondary">| ID 編號</small></th>
               <th scope="col">優惠碼</th>
+              <th scope="col">折扣</th>
               <th scope="col">到期日期</th>
               <th scope="col">啟用狀態</th>
-              <th scope="col">折扣</th>
+
               <th scope="col"></th>
             </tr>
           </thead>
@@ -102,13 +103,14 @@
                 {{ coupon.title }}<br /><small class="text-secondary">{{ coupon.id }}</small>
               </td>
               <td>{{ coupon.code }}</td>
+              <td>{{ coupon.percent / 10 }} 折</td>
               <td>{{ new Date(coupon.due_date * 1000).toLocaleDateString('zh-TW') }}</td>
               <td>
                 <span class="badge" :class="{ 'bg-success': coupon.is_enabled, 'bg-light text-secondary': !coupon.is_enabled }">{{
                   coupon.is_enabled ? '啟用' : '停用'
                 }}</span>
               </td>
-              <td>{{ coupon.percent / 10 }} 折</td>
+
               <td class="text-nowrap">
                 <button @click="openModal(coupon)" type="button" class="btn btn-sm btn-outline-dark rounded-lg me-2">查看</button>
                 <button @click="openDeleteModal(coupon.id)" type="button" class="btn btn-sm btn-outline-danger rounded-lg">刪除</button>

@@ -44,7 +44,7 @@
   };
 
   const { form, formTitle, loadCoupon } = useCouponForm();
-  console.log('form =>', form);
+
   watch(
     () => coupon,
     newCoupon => {

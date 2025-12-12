@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import { apiUserLogin } from '@/api/user'
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+  import { apiUserLogin } from '@/api/user';
+  import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
 
-const router = useRouter()
+  const router = useRouter();
 
-const form = ref({
-  username: '',
-  password: '',
-})
+  const form = ref({
+    username: '',
+    password: '',
+  });
 
-const isProcessLogin = ref(false)
+  const isProcessLogin = ref(false);
 
-const handleLogin = async () => {
-  isProcessLogin.value = true
-  try {
-    const res = await apiUserLogin({
-      username: form.value.username,
-      password: form.value.password,
-    })
+  const handleLogin = async () => {
+    isProcessLogin.value = true;
+    try {
+      const res = await apiUserLogin({
+        username: form.value.username,
+        password: form.value.password,
+      });
 
-    const { token, expired } = res.data
-    document.cookie = `hexToken=${token};expires=${new Date(expired)};`
-    router.push('/product-management')
-  } catch (error) {
-    alert('登入失敗')
-  } finally {
-    isProcessLogin.value = false
-  }
-}
+      const { token, expired } = res.data;
+      document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
+      router.push('/product-management');
+    } catch (error) {
+      alert('登入失敗');
+    } finally {
+      isProcessLogin.value = false;
+    }
+  };
 </script>
 
 <template>
@@ -74,14 +74,8 @@ const handleLogin = async () => {
                   />
                 </div>
                 <div class="d-flex flex-column gap-2">
-                  <button
-                    :disabled="isProcessLogin"
-                    type="submit"
-                    class="btn btn-dark rounded-lg py-2"
-                  >
-                    登入
-                  </button>
-                  <button type="button" class="btn btn-outline-dark rounded-lg py-2">回首頁</button>
+                  <button :disabled="isProcessLogin" type="submit" class="btn btn-dark rounded-lg py-2">登入</button>
+                  <!-- <button type="button" class="btn btn-outline-dark rounded-lg py-2">回首頁</button> -->
                 </div>
               </form>
             </div>
@@ -93,23 +87,23 @@ const handleLogin = async () => {
 </template>
 
 <style lang="scss" scoped>
-.login-page {
-  background-color: #f8f9fa;
-  font-family: 'Inter', sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
+  .login-page {
+    background-color: #f8f9fa;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
 
-.login-container {
-  max-width: 900px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  overflow: hidden;
-}
+  .login-container {
+    max-width: 900px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+  }
 
-.login-image-section {
-  background-color: #e9ecef;
-}
+  .login-image-section {
+    background-color: #e9ecef;
+  }
 </style>

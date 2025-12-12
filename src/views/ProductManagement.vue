@@ -133,7 +133,7 @@ TypeScript 練習題目 - 商品管理頁面
               <th scope="col">商品名稱<small class="text-secondary ms-2">| ID 編號</small></th>
               <th scope="col">原價</th>
               <th scope="col">售價</th>
-              <th scope="col" class="text-center">啟用</th>
+              <th scope="col">啟用狀態</th>
               <th scope="col"></th>
             </tr>
           </thead>
@@ -145,17 +145,10 @@ TypeScript 練習題目 - 商品管理頁面
               </td>
               <td>{{ product.origin_price }}</td>
               <td>{{ product.price }}</td>
-              <td class="text-center">
-                <div class="form-check form-switch d-flex justify-content-center align-items-center">
-                  <input
-                    readonly
-                    class="form-check-input"
-                    style="pointer-events: none"
-                    type="checkbox"
-                    id="flexSwitchCheckDefault1"
-                    :checked="Boolean(product.is_enabled)"
-                  />
-                </div>
+              <td>
+                <span class="badge" :class="{ 'bg-success': product.is_enabled, 'bg-light text-secondary': !product.is_enabled }">{{
+                  product.is_enabled ? '啟用' : '停用'
+                }}</span>
               </td>
               <td class="text-nowrap">
                 <button @click="openModal(product)" type="button" class="btn btn-sm btn-outline-dark rounded-lg me-2">編輯</button>

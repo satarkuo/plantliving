@@ -91,7 +91,7 @@ TypeScript 練習題目 - 商品彈窗組件
     newProduct => {
       if (newProduct.id) {
         loadProduct(newProduct);
-        resetImages([newProduct.imageUrl, ...newProduct.imagesUrl]);
+        resetImages([newProduct.imageUrl, ...(newProduct.imagesUrl ?? [])].filter(Boolean));
       } else {
         loadProduct(null);
         resetImages([]);
@@ -114,7 +114,7 @@ TypeScript 練習題目 - 商品彈窗組件
 
     const data = {
       ...productData,
-      imagesUrl: productData.imagesUrl ? productData.imagesUrl : [''],
+      imagesUrl: imagesUrl.filter(Boolean),
     };
 
     isLoading.value = true;
@@ -154,26 +154,26 @@ TypeScript 練習題目 - 商品彈窗組件
             <div class="col-md-6">
               <form>
                 <div class="mb-3">
-                  <label for="productName" class="form-label">商品名稱</label>
+                  <label for="productName" class="form-label">商品名稱<span class="text-danger ms-1">*</span></label>
                   <input v-model="form.title" type="text" class="form-control rounded-lg" id="productName" />
                 </div>
                 <div class="row">
                   <div class="col-6 mb-3">
-                    <label for="productOriginalPrice" class="form-label">原價</label>
+                    <label for="productOriginalPrice" class="form-label">原價<span class="text-danger ms-1">*</span></label>
                     <input v-model="form.origin_price" type="number" class="form-control rounded-lg" id="productOriginalPrice" />
                   </div>
                   <div class="col-6 mb-3">
-                    <label for="productPrice" class="form-label">售價</label>
+                    <label for="productPrice" class="form-label">售價<span class="text-danger ms-1">*</span></label>
                     <input v-model="form.price" type="number" class="form-control rounded-lg" id="productPrice" />
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-6 mb-3">
-                    <label for="productCategory" class="form-label">分類</label>
+                    <label for="productCategory" class="form-label">分類<span class="text-danger ms-1">*</span></label>
                     <input v-model="form.category" class="form-control rounded-lg" id="productCategory" />
                   </div>
                   <div class="col-6 mb-3">
-                    <label for="productUnit" class="form-label">單位</label>
+                    <label for="productUnit" class="form-label">單位<span class="text-danger ms-1">*</span></label>
                     <input v-model="form.unit" class="form-control rounded-lg" id="productUnit" />
                   </div>
                 </div>
@@ -202,7 +202,7 @@ TypeScript 練習題目 - 商品彈窗組件
             </div>
             <div class="col-md-6">
               <div class="mb-3">
-                <label class="form-label">上傳圖片 (最多 4 張)</label>
+                <label class="form-label">上傳圖片 (最多 4 張)<span class="text-danger ms-1">*</span></label>
 
                 <div class="input-group mb-2">
                   <input type="url" class="form-control rounded-lg" placeholder="輸入圖片連結" v-model="imageUrlInput" />

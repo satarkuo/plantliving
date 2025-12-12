@@ -23,7 +23,7 @@ TypeScript 練習題目 - 商品管理頁面
   // TODO: 匯入型別定義
   // 提示：從 @/types/product 匯入 Pagination, ProductData
   import type { Pagination, ProductData } from '@/types/product';
-  import { onMounted, ref, useTemplateRef } from 'vue';
+  import { ref, useTemplateRef, watch } from 'vue';
 
   // TODO: 為模板引用加上型別註解
   // 提示：使用 useTemplateRef<InstanceType<typeof ProductModal>>()
@@ -60,9 +60,7 @@ TypeScript 練習題目 - 商品管理頁面
       alert('取得產品列表失敗');
     }
   };
-  onMounted(() => {
-    getProducts();
-  });
+  watch(currentPage, getProducts, { immediate: true });
 
   // TODO: 為 getInitialProductData 函式加上型別註解
   // 提示：這個函式不接受參數，回傳 ProductData 型別
@@ -89,7 +87,12 @@ TypeScript 練習題目 - 商品管理頁面
   // 提示：參數 product 的型別是 ProductData | null，預設值是 null，沒有回傳值
   const openModal = (product: ProductData | null = null): void => {
     if (product) {
-      tempProduct.value = { ...product, imagesUrl: product.imagesUrl ? [...product.imagesUrl] : [''] };
+      tempProduct.value = {
+        ...product,
+        imagesUrl: product.imagesUrl ? [...product.imagesUrl] : [''],
+      };
+    } else {
+      tempProduct.value = getInitialProductData();
     }
 
     productModalRef.value?.openModal();
